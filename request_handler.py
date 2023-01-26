@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_animals, get_single_animal, get_all_locations, get_single_location, create_animal, create_location, create_employee, get_single_employee, get_all_employees
+from views import get_all_animals, get_single_animal, get_all_locations, get_single_location, create_animal, create_location, create_employee, get_single_employee, get_all_employees, get_all_customers, get_single_customer, create_customer
 import json
 
 
@@ -86,7 +86,14 @@ class HandleRequests(BaseHTTPRequestHandler):
                 response = f"{get_single_employee(id)}"
 
             else:
-                response = f"{get_all_employees()}"        
+                response = f"{get_all_employees()}"  
+                
+        if resource == "customers":
+            if id is not None:
+                response = f"{get_single_customer(id)}"
+
+            else:
+                response = f"{get_all_customers()}"                      
                 
 
         self.wfile.write(response.encode())
@@ -110,6 +117,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         new_location = None
         
         new_employee = None
+        
+        new_customer = None
 
         # Add a new animal to the list. Don't worry about
         # the orange squiggle, you'll define the create_animal
@@ -122,13 +131,18 @@ class HandleRequests(BaseHTTPRequestHandler):
             
         if resource == "employees":
             new_employee = create_employee(post_body)       
-
+            
+        if resource == "customers":
+            new_customer = create_customer(post_body)       
+    
         # Encode the new animal and send in response
         self.wfile.write(f"{new_animal}".encode())
         
         self.wfile.write(f"{new_location}".encode())
         
         self.wfile.write(f"{new_employee}".encode())
+        
+        self.wfile.write(f"{new_customer}".encode())
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any PUT request.
